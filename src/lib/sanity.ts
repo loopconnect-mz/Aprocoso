@@ -1,6 +1,6 @@
 import { createClient } from '@sanity/client';
 import type { PortableTextBlock } from '@portabletext/types';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 
 export const sanityClient = createClient({
   projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID || 's7ek0e64',
@@ -9,7 +9,7 @@ export const sanityClient = createClient({
   apiVersion: '2023-05-03',
 });
 
-const builder = imageUrlBuilder(sanityClient);
+const builder = createImageUrlBuilder(sanityClient);
 
 export function urlFor(source: any) {
   return builder.image(source);

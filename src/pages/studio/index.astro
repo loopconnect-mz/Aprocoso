@@ -1,0 +1,27 @@
+---
+import SanityStudio from '../../components/SanityStudio';
+---
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sanity Studio | APROCOSO</title>
+    <style>
+      /* Ocupa o ecrã todo sem margens */
+      html, body, #studio-root {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="studio-root">
+      <!-- O Sanity Studio é renderizado aqui apenas no browser (client:only) -->
+      <SanityStudio client:only="react" />
+    </div>
+  </body>
+</html>
