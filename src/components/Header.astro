@@ -1,0 +1,152 @@
+---
+---
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" x-data="{ open: false }">
+  <!-- Barra principal: começa transparente, fica sólida ao fazer scroll -->
+  <div id="header-inner" class="mx-auto max-w-7xl px-4 sm:px-6 transition-all duration-500">
+    <div class="flex items-center justify-between h-20">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+          <span class="text-white text-lg font-extrabold leading-none">A</span>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span id="logo-title" class="text-lg font-extrabold tracking-tight text-white transition-colors duration-300">APROCOSO</span>
+          <span id="logo-sub" class="text-[10px] font-medium tracking-widest uppercase text-white/70 transition-colors duration-300">Coesão Solidária</span>
+        </div>
+      </a>
+
+      <!-- Nav Desktop -->
+      <nav class="hidden md:flex items-center gap-1">
+        {[
+          { href: '/#sobre', label: 'Sobre Nós' },
+          { href: '/#projetos', label: 'Intervenção' },
+          { href: '/#impacto', label: 'Impacto' },
+          { href: '/artigos', label: 'Notícias' },
+        ].map(link => (
+          <a
+            href={link.href}
+            class="nav-link px-4 py-2 rounded-full text-sm font-semibold text-white/90 hover:text-white hover:bg-white/15 transition-all duration-200"
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- CTA Button + Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="/#contactos" class="hidden md:inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white px-5 py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5">
+          Apoiar
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+
+        <!-- Botão Hamburguer (mobile) -->
+        <button
+          id="menu-toggle"
+          class="md:hidden flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-300"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+        >
+          <span id="bar-top"    class="block w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center"></span>
+          <span id="bar-mid"    class="block w-5 h-0.5 bg-white rounded-full transition-all duration-300"></span>
+          <span id="bar-bot"    class="block w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Mobile (dropdown) -->
+  <div
+    id="mobile-menu"
+    class="md:hidden hidden flex-col gap-1 px-4 pb-4 pt-2 bg-primary-dark/95 backdrop-blur-xl border-t border-white/10 shadow-2xl"
+  >
+    <a href="/#sobre"    class="mobile-link px-4 py-3 rounded-xl text-white/90 font-semibold hover:bg-white/10 transition">Sobre Nós</a>
+    <a href="/#projetos" class="mobile-link px-4 py-3 rounded-xl text-white/90 font-semibold hover:bg-white/10 transition">Áreas de Intervenção</a>
+    <a href="/#impacto"  class="mobile-link px-4 py-3 rounded-xl text-white/90 font-semibold hover:bg-white/10 transition">Impacto</a>
+    <a href="/artigos"   class="mobile-link px-4 py-3 rounded-xl text-white/90 font-semibold hover:bg-white/10 transition">Notícias</a>
+    <a href="/#contactos" class="mt-2 flex items-center justify-center gap-2 bg-primary hover:bg-primary-light text-white px-5 py-3 rounded-xl font-bold transition-all duration-300">
+      Apoiar a APROCOSO
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- Spacer para não ocultar conteúdo sob o header fixo noutras páginas -->
+<script>
+  const header      = document.getElementById('site-header');
+  const headerInner = document.getElementById('header-inner');
+  const logoTitle   = document.getElementById('logo-title');
+  const logoSub     = document.getElementById('logo-sub');
+  const navLinks    = document.querySelectorAll('.nav-link');
+
+  // ─── Scroll: alterna entre transparente e sólido ────────────────
+  function onScroll() {
+    const scrolled = window.scrollY > 30;
+    header?.classList.toggle('bg-white/95', scrolled);
+    header?.classList.toggle('backdrop-blur-xl', scrolled);
+    header?.classList.toggle('shadow-md', scrolled);
+
+    if (scrolled) {
+      headerInner?.classList.add('py-0');
+      logoTitle?.classList.replace('text-white', 'text-primary-dark');
+      logoSub?.classList.replace('text-white/70', 'text-gray-500');
+      navLinks.forEach(l => {
+        l.classList.replace('text-white/90', 'text-gray-700');
+        l.classList.replace('hover:text-white', 'hover:text-primary');
+        l.classList.replace('hover:bg-white/15', 'hover:bg-primary/8');
+      });
+    } else {
+      headerInner?.classList.remove('py-0');
+      logoTitle?.classList.replace('text-primary-dark', 'text-white');
+      logoSub?.classList.replace('text-gray-500', 'text-white/70');
+      navLinks.forEach(l => {
+        l.classList.replace('text-gray-700', 'text-white/90');
+        l.classList.replace('hover:text-primary', 'hover:text-white');
+        l.classList.replace('hover:bg-primary/8', 'hover:bg-white/15');
+      });
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // executa uma vez ao carregar
+
+  // ─── Toggle do menu mobile ───────────────────────────────────────
+  const toggle   = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const barTop   = document.getElementById('bar-top');
+  const barMid   = document.getElementById('bar-mid');
+  const barBot   = document.getElementById('bar-bot');
+
+  let menuOpen = false;
+
+  toggle?.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    toggle.setAttribute('aria-expanded', String(menuOpen));
+
+    if (menuOpen) {
+      mobileMenu?.classList.remove('hidden');
+      mobileMenu?.classList.add('flex');
+      barTop?.classList.add('rotate-45', 'translate-y-2');
+      barMid?.classList.add('opacity-0', 'scale-x-0');
+      barBot?.classList.add('-rotate-45', '-translate-y-2');
+    } else {
+      mobileMenu?.classList.add('hidden');
+      mobileMenu?.classList.remove('flex');
+      barTop?.classList.remove('rotate-45', 'translate-y-2');
+      barMid?.classList.remove('opacity-0', 'scale-x-0');
+      barBot?.classList.remove('-rotate-45', '-translate-y-2');
+    }
+  });
+
+  // Fecha o menu ao clicar num link
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      menuOpen = false;
+      mobileMenu?.classList.add('hidden');
+      mobileMenu?.classList.remove('flex');
+      barTop?.classList.remove('rotate-45', 'translate-y-2');
+      barMid?.classList.remove('opacity-0', 'scale-x-0');
+      barBot?.classList.remove('-rotate-45', '-translate-y-2');
+    });
+  });
+</script>

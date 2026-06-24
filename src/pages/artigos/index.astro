@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getPosts, urlFor } from '../../lib/sanity';
+
+const posts = await getPosts();
+---
+
+<Layout title="Notícias e Artigos" description="Acompanhe as últimas notícias, projetos e histórias de impacto da APROCOSO.">
+  <section class="py-20 bg-light min-h-screen">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <header class="mb-12 text-center max-w-3xl mx-auto">
+        <h1 class="text-4xl font-bold mb-4 text-primary-dark">Notícias e Artigos</h1>
+        <p class="text-gray-600 text-lg">Acompanhe as últimas novidades, atualizações de projetos e histórias de impacto das nossas intervenções nas comunidades.</p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map((post) => (
+          <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col h-full">
+            <a href={`/artigos/${post.slug.current}`} class="block aspect-video overflow-hidden relative">
+              {post.mainImage ? (
+                <img 
+                  src={urlFor(post.mainImage).width(600).height(400).url()} 
+                  alt={post.title}
+                  class="w-full h-full object-cover transform hover:scale-105 transition duration-500"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Sem imagem</div>
+              )}
+              {post.category && (
+                <span class="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                  {post.category.title}
+                </span>
+              )}
+            </a>
+            <div class="p-6 flex flex-col flex-grow relative">
+              {/* Category Link invisível sob toda a área se quisermos, mas o href do artigo é mais importante */}
+              <time datetime={post.publishedAt} class="text-sm text-gray-500 mb-2">
+                {new Date(post.publishedAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </time>
+              <h3 class="text-xl font-bold mb-3 text-primary-dark hover:text-primary transition">
+                <a href={`/artigos/${post.slug.current}`}>{post.title}</a>
+              </h3>
+              <p class="text-gray-600 text-sm mb-6 flex-grow">{post.shortDescription}</p>
+              
+              <div class="flex items-center mt-auto pt-4 border-t border-gray-100">
+                {post.author?.image ? (
+                  <img src={urlFor(post.author.image).width(40).height(40).url()} alt={post.author.name} class="w-10 h-10 rounded-full mr-3 object-cover" />
+                ) : (
+                  <div class="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-white font-bold mr-3">
+                    {post.author?.name ? post.author.name.charAt(0) : 'A'}
+                  </div>
+                )}
+                <span class="text-sm font-medium text-gray-800">{post.author?.name || 'Equipa APROCOSO'}</span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      
+      {posts.length === 0 && (
+        <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
+          <p class="text-gray-500 text-lg">Ainda não existem artigos publicados.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

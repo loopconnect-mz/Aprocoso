@@ -1,0 +1,286 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getPosts, urlFor } from '../lib/sanity';
+import PhotoCarousel from '../components/PhotoCarousel';
+
+const posts = await getPosts();
+
+// Carregamento dinâmico das fotos locais para o site
+const localImagesObj = import.meta.glob('../assets/fotos/*.{jpeg,jpg,png}', { eager: true });
+const photoUrls = Object.values(localImagesObj).map((img: any) => img.default.src);
+
+// Selecionar algumas fotos para uso específico (caso existam suficientes)
+const heroBg = photoUrls.length > 0 ? photoUrls[photoUrls.length - 1] : '';
+const aboutImg = photoUrls.length > 1 ? photoUrls[0] : heroBg;
+
+// Selecionar fotos para o carrossel (ex: até 8 fotos)
+const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
+---
+
+<Layout title="Início">
+  <!-- Hero Section Dinâmico com Glassmorphism -->
+  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <!-- Imagem de Fundo Dinâmica (Real da Instituição) -->
+    {heroBg && (
+      <div 
+        class="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 animate-[kenburns_20s_ease-out_infinite_alternate]" 
+        style={`background-image: url('${heroBg}')`}
+      ></div>
+    )}
+    <div class="absolute inset-0 bg-primary-dark/60 mix-blend-multiply"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-primary-dark/80 via-transparent to-light"></div>
+    
+    <div class="container mx-auto px-4 max-w-6xl relative z-10 py-32 mt-16 animate-fade-in-up">
+      <div class="max-w-4xl text-center mx-auto">
+        <span class="inline-block py-1 px-4 rounded-full glass border-white/20 text-white font-medium mb-6 text-sm tracking-wider uppercase backdrop-blur-md">
+          Moçambique • Sociedade Civil
+        </span>
+        <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8 text-white drop-shadow-lg">
+          Construindo Comunidades <br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-white">Fortes e Resilientes</span>
+        </h1>
+        <p class="text-xl md:text-2xl mb-12 text-blue-50 font-light leading-relaxed max-w-3xl mx-auto drop-shadow-md">
+          A APROCOSO é uma organização da sociedade civil dedicada à promoção da proteção, inclusão social e resposta humanitária.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-6">
+          <a href="#projetos" class="bg-primary hover:bg-primary-light text-white px-8 py-4 rounded-full font-bold transition-all duration-300 shadow-[0_0_20px_rgba(61,81,181,0.4)] hover:shadow-[0_0_30px_rgba(107,123,232,0.6)] hover:-translate-y-1">
+            Nossos Projetos
+          </a>
+          <a href="#sobre" class="bg-white text-primary-dark px-8 py-4 rounded-full font-bold hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 shadow-xl hover:shadow-white/30">
+            Quem Somos
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sobre Nós Section -->
+  <section id="sobre" class="py-24 relative overflow-hidden bg-light">
+    <!-- Decoração de Fundo -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+    
+    <div class="container mx-auto px-4 max-w-6xl relative z-10">
+      <div class="flex flex-col lg:flex-row gap-16 items-center">
+        <div class="lg:w-1/2">
+          <div class="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase mb-4 text-sm">
+            <span class="w-8 h-1 bg-primary rounded-full"></span> Sobre Nós
+          </div>
+          <h2 class="text-4xl md:text-5xl font-extrabold mb-8 text-primary-dark">Nossa Missão & Visão</h2>
+          <div class="prose prose-lg text-gray-600 mb-8">
+            <p>
+              A <strong>APROCOSO</strong> é uma organização sem fins lucrativos criada para promover a coesão social, a proteção dos grupos vulneráveis e o desenvolvimento sustentável das comunidades em Moçambique.
+            </p>
+            <p>
+              Acreditamos que comunidades fortes e inclusivas são fundamentais para a construção da paz, da dignidade humana e do desenvolvimento sustentável.
+            </p>
+          </div>
+          
+          <div class="grid sm:grid-cols-2 gap-6 mt-10">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <span class="text-2xl">👁️</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 text-primary-dark">Nossa Visão</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">Uma sociedade inclusiva, resiliente e pacífica, onde todas as pessoas tenham acesso aos seus direitos, oportunidades e uma vida digna.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div class="w-12 h-12 bg-primary-light/10 rounded-full flex items-center justify-center mb-4">
+                <span class="text-2xl">🎯</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 text-primary-dark">Nossa Missão</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">Promover a proteção, inclusão social e desenvolvimento através de programas comunitários e resposta humanitária.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lg:w-1/2 relative">
+          <div class="absolute inset-0 bg-primary translate-x-4 translate-y-4 rounded-3xl opacity-10"></div>
+          {aboutImg && (
+            <img 
+              src={aboutImg} 
+              alt="Atuação da APROCOSO" 
+              class="rounded-3xl shadow-2xl relative z-10 object-cover h-[600px] w-full"
+              loading="lazy" 
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Carrossel de Ação no Terreno -->
+  <section class="py-24 bg-white overflow-hidden">
+    <div class="container mx-auto px-4 max-w-6xl mb-12 text-center">
+      <div class="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase mb-4 text-sm">
+        <span class="w-8 h-1 bg-primary rounded-full"></span> Galeria
+      </div>
+      <h2 class="text-4xl md:text-5xl font-extrabold text-primary-dark">Ação no Terreno</h2>
+      <p class="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">Imagens que retratam a nossa dedicação diária e o impacto direto nas comunidades com as quais trabalhamos.</p>
+    </div>
+    
+    <PhotoCarousel photos={carouselPhotos} client:load />
+  </section>
+
+  <!-- Áreas de Intervenção (Cards com Micro-Animações) -->
+  <section id="projetos" class="py-24 bg-light relative">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-primary-dark">Áreas de Intervenção</h2>
+        <p class="text-gray-600 text-lg">Atuamos de forma integrada para responder aos desafios das comunidades mais vulneráveis, promovendo um impacto duradouro e sustentável.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[
+          { title: 'Proteção da Criança', icon: '🛡️', desc: 'Promovemos ambientes seguros para crianças e adolescentes através da prevenção da violência, abuso, exploração e negligência.' },
+          { title: 'Prevenção de VBG', icon: '✊', desc: 'Implementamos ações de prevenção, sensibilização e apoio a sobreviventes de Violência Baseada no Género (VBG).' },
+          { title: 'Apoio Psicossocial', icon: '🧠', desc: 'Prestamos apoio psicossocial a indivíduos, famílias e comunidades afetadas por conflitos e deslocamentos.' },
+          { title: 'Educação e Empoderamento', icon: '📚', desc: 'Promovemos o acesso à educação, formação profissional e desenvolvimento de competências para a vida.' },
+          { title: 'Desenvolvimento Comunitário', icon: '🌱', desc: 'Fortalecemos a capacidade das comunidades para promover meios de subsistência sustentáveis e inclusão económica.' },
+          { title: 'Assistência Humanitária', icon: '🤝', desc: 'Respondemos às necessidades imediatas de populações afetadas por emergências, garantindo proteção.' }
+        ].map(area => (
+          <div class="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgb(61,81,181,0.08)] transition-all duration-500 hover:-translate-y-2 group border border-transparent hover:border-primary/10">
+            <div class="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+              <span class="text-3xl grayscale group-hover:grayscale-0 transition-all duration-300">{area.icon}</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-primary-dark group-hover:text-primary transition-colors">{area.title}</h3>
+            <p class="text-gray-600 leading-relaxed">{area.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Impacto & Alcance -->
+  <section class="py-24 bg-primary-dark text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-primary rounded-full blur-[120px] opacity-30 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+    
+    <div class="container mx-auto px-4 max-w-6xl relative z-10">
+      <div class="flex flex-col md:flex-row gap-16 items-center">
+        <div class="md:w-1/2">
+          <div class="inline-flex items-center gap-2 text-primary-light font-bold tracking-wider uppercase mb-4 text-sm">
+            <span class="w-8 h-1 bg-primary-light rounded-full"></span> Nosso Impacto
+          </div>
+          <h2 class="text-4xl md:text-5xl font-extrabold mb-8 text-white">Transformar Vidas</h2>
+          <p class="text-blue-100 mb-8 text-lg leading-relaxed">
+            A APROCOSO desenvolve as suas atividades em comunidades afetadas por conflitos, deslocamentos e vulnerabilidades socioeconómicas nas províncias de <strong class="text-white">Cabo Delgado</strong> e <strong class="text-white">Nampula</strong>.
+          </p>
+          
+          <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="glass-dark p-6 rounded-2xl">
+              <span class="block text-3xl mb-2">🏘️</span>
+              <span class="font-bold block mb-1">Comunidades</span>
+              <span class="text-sm text-blue-200 block">Mais resilientes</span>
+            </div>
+            <div class="glass-dark p-6 rounded-2xl">
+              <span class="block text-3xl mb-2">👶</span>
+              <span class="font-bold block mb-1">Crianças</span>
+              <span class="text-sm text-blue-200 block">Protegidas e seguras</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:w-1/2">
+          <div class="glass-dark p-10 rounded-3xl relative">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-primary-light rounded-full blur-2xl opacity-50"></div>
+            <h3 class="text-2xl font-bold mb-8">Quem Apoiamos</h3>
+            <ul class="space-y-4">
+              {[
+                'Pessoas deslocadas internamente',
+                'Comunidades de acolhimento',
+                'Mulheres e raparigas',
+                'Crianças e adolescentes',
+                'Jovens e Pessoas com deficiência'
+              ].map(item => (
+                <li class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
+                  <div class="w-8 h-8 rounded-full bg-primary-light/30 flex items-center justify-center text-white font-bold">✓</div>
+                  <span class="font-medium">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notícias / Artigos Recentes -->
+  <section class="py-24 bg-light">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase mb-4 text-sm">
+            <span class="w-8 h-1 bg-primary rounded-full"></span> Atualizações
+          </div>
+          <h2 class="text-4xl md:text-5xl font-extrabold text-primary-dark">Últimas Notícias</h2>
+        </div>
+        <a href="/artigos" class="group flex items-center gap-3 text-primary font-bold hover:text-primary-dark transition-colors bg-white px-6 py-3 rounded-full shadow-sm hover:shadow-md">
+          Ver todas as notícias
+          <span class="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {posts.slice(0, 3).map((post) => (
+          <article class="bg-white rounded-3xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.04)] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full border border-gray-50">
+            <a href={`/artigos/${post.slug.current}`} class="block aspect-[4/3] overflow-hidden relative">
+              {post.mainImage ? (
+                <img 
+                  src={urlFor(post.mainImage).width(800).height(600).url()} 
+                  alt={post.title}
+                  class="w-full h-full object-cover transform hover:scale-110 transition duration-700"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">Sem imagem</div>
+              )}
+              {post.category && (
+                <span class="absolute top-6 left-6 glass text-primary-dark text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
+                  {post.category.title}
+                </span>
+              )}
+            </a>
+            <div class="p-8 flex flex-col flex-grow">
+              <time datetime={post.publishedAt} class="text-sm font-semibold text-primary-light mb-3">
+                {new Date(post.publishedAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </time>
+              <h3 class="text-2xl font-bold mb-4 text-primary-dark leading-snug hover:text-primary transition-colors">
+                <a href={`/artigos/${post.slug.current}`}>{post.title}</a>
+              </h3>
+              <p class="text-gray-600 mb-8 flex-grow leading-relaxed">{post.shortDescription}</p>
+              
+              <div class="flex items-center mt-auto pt-6 border-t border-gray-100">
+                {post.author?.image ? (
+                  <img src={urlFor(post.author.image).width(48).height(48).url()} alt={post.author.name} class="w-12 h-12 rounded-full mr-4 object-cover shadow-sm" />
+                ) : (
+                  <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold mr-4 text-lg">
+                    {post.author?.name ? post.author.name.charAt(0) : 'A'}
+                  </div>
+                )}
+                <div>
+                  <span class="text-sm font-bold text-gray-900 block">{post.author?.name || 'Equipa APROCOSO'}</span>
+                  <span class="text-xs text-gray-500">Autor</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      
+      {posts.length === 0 && (
+        <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-300">
+          <div class="text-4xl mb-4">📰</div>
+          <p class="text-gray-500 font-medium text-lg">Ainda não existem artigos publicados.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <style>
+    /* Animação adicional para o Hero Image Ken Burns Effect */
+    @keyframes kenburns {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+  </style>
+</Layout>
