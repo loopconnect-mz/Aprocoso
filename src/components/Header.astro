@@ -1,14 +1,17 @@
 ---
+const localLogo = import.meta.glob('../assets/logo.png', { eager: true });
+// Obtém o caminho correto da imagem resolvida pelo Vite/Astro
+const logoSrc = Object.values(localLogo)[0] ? (Object.values(localLogo)[0] as any).default.src : '';
 ---
-<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" x-data="{ open: false }">
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
   <!-- Barra principal: começa transparente, fica sólida ao fazer scroll -->
   <div id="header-inner" class="mx-auto max-w-7xl px-4 sm:px-6 transition-all duration-500">
     <div class="flex items-center justify-between h-20">
 
-      <!-- Logo -->
+      <!-- Logo corrigido para o deploy -->
       <a href="/" class="flex items-center gap-3 group">
         <div class="flex flex-col leading-tight">
-         <img src="./src/assets/logo.png" alt="APROCOSO" width={150} height={40} />
+          {logoSrc && <img src={logoSrc} alt="APROCOSO" width={150} height={40} class="object-contain" />}
         </div>
       </a>
 
@@ -36,16 +39,16 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
 
-        <!-- Botão Hamburguer (mobile) -->
+        <!-- Botão Hamburguer (mobile) com id para controle de cor -->
         <button
           id="menu-toggle"
           class="md:hidden flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-300"
           aria-label="Abrir menu"
           aria-expanded="false"
         >
-          <span id="bar-top"    class="block w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center"></span>
-          <span id="bar-mid"    class="block w-5 h-0.5 bg-white rounded-full transition-all duration-300"></span>
-          <span id="bar-bot"    class="block w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center"></span>
+          <span id="bar-top"    class="menu-bar block w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center"></span>
+          <span id="bar-mid"    class="menu-bar block w-5 h-0.5 bg-white rounded-full transition-all duration-300"></span>
+          <span id="bar-bot"    class="menu-bar block w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center"></span>
         </button>
       </div>
     </div>
@@ -67,13 +70,12 @@
   </div>
 </header>
 
-<!-- Spacer para não ocultar conteúdo sob o header fixo noutras páginas -->
 <script>
   const header      = document.getElementById('site-header');
   const headerInner = document.getElementById('header-inner');
-  const logoTitle   = document.getElementById('logo-title');
-  const logoSub     = document.getElementById('logo-sub');
   const navLinks    = document.querySelectorAll('.nav-link');
+  const toggleBtn   = document.getElementById('menu-toggle');
+  const menuBars    = document.querySelectorAll('.menu-bar');
 
   // ─── Scroll: alterna entre transparente e sólido ────────────────
   function onScroll() {
@@ -84,8 +86,13 @@
 
     if (scrolled) {
       headerInner?.classList.add('py-0');
-      logoTitle?.classList.replace('text-white', 'text-primary-dark');
-      logoSub?.classList.replace('text-white/70', 'text-gray-500');
+      
+      // Ajuste do botão hambúrguer no scroll (fundo escuro/borda cinza)
+      toggleBtn?.classList.replace('bg-white/10', 'bg-slate-900/5');
+      toggleBtn?.classList.replace('border-white/20', 'border-slate-900/10');
+      toggleBtn?.classList.replace('hover:bg-white/20', 'hover:bg-slate-900/10');
+      menuBars.forEach(b => b.classList.replace('bg-white', 'bg-slate-900'));
+
       navLinks.forEach(l => {
         l.classList.replace('text-white/90', 'text-gray-700');
         l.classList.replace('hover:text-white', 'hover:text-primary');
@@ -93,8 +100,13 @@
       });
     } else {
       headerInner?.classList.remove('py-0');
-      logoTitle?.classList.replace('text-primary-dark', 'text-white');
-      logoSub?.classList.replace('text-gray-500', 'text-white/70');
+      
+      // Restaura o botão hambúrguer original
+      toggleBtn?.classList.replace('bg-slate-900/5', 'bg-white/10');
+      toggleBtn?.classList.replace('border-slate-900/10', 'border-white/20');
+      toggleBtn?.classList.replace('hover:bg-slate-900/10', 'hover:bg-white/20');
+      menuBars.forEach(b => b.classList.replace('bg-slate-900', 'bg-white'));
+
       navLinks.forEach(l => {
         l.classList.replace('text-gray-700', 'text-white/90');
         l.classList.replace('hover:text-primary', 'hover:text-white');
@@ -107,17 +119,16 @@
   onScroll(); // executa uma vez ao carregar
 
   // ─── Toggle do menu mobile ───────────────────────────────────────
-  const toggle   = document.getElementById('menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
-  const barTop   = document.getElementById('bar-top');
-  const barMid   = document.getElementById('bar-mid');
-  const barBot   = document.getElementById('bar-bot');
+  const barTop    = document.getElementById('bar-top');
+  const barMid    = document.getElementById('bar-mid');
+  const barBot    = document.getElementById('bar-bot');
 
   let menuOpen = false;
 
-  toggle?.addEventListener('click', () => {
+  toggleBtn?.addEventListener('click', () => {
     menuOpen = !menuOpen;
-    toggle.setAttribute('aria-expanded', String(menuOpen));
+    toggleBtn.setAttribute('aria-expanded', String(menuOpen));
 
     if (menuOpen) {
       mobileMenu?.classList.remove('hidden');
