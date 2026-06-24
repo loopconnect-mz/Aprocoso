@@ -16,7 +16,9 @@ export default defineConfig({
       dataset: process.env.PUBLIC_SANITY_DATASET || 'artigos',
       useCdn: false, // `false` garante que obtemos os dados mais recentes na build
       apiVersion: '2023-05-03',
-      studioBasePath: '/studio',
+      // studioBasePath foi removido: o @sanity/astro injeta uma rota dinâmica
+      // que é incompatível com SSG. O Studio é servido pela nossa
+      // página estática em src/pages/studio/index.astro
     }),
   ],
 });
