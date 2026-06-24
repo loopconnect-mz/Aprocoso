@@ -18,45 +18,73 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
 ---
 
 <Layout title="Início">
-  <!-- Hero Section Dinâmico com Glassmorphism -->
-  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-    <!-- Imagem de Fundo Dinâmica (Real da Instituição) -->
+  <section class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-950">
     {heroBg && (
       <div 
-        class="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 animate-[kenburns_20s_ease-out_infinite_alternate]" 
+        class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity scale-100 animate-[kenburns_24s_ease-out_infinite_alternate]" 
         style={`background-image: url('${heroBg}')`}
       ></div>
     )}
-    <div class="absolute inset-0 bg-primary-dark/60 mix-blend-multiply"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-dark/80 via-transparent to-light"></div>
     
-    <div class="container mx-auto px-4 max-w-6xl relative z-10 py-32 mt-16 animate-fade-in-up">
-      <div class="max-w-4xl text-center mx-auto">
-        <span class="inline-block py-1 px-4 rounded-full glass border-white/20 text-white font-medium mb-6 text-sm tracking-wider uppercase backdrop-blur-md">
-          Moçambique • Sociedade Civil
-        </span>
-        <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8 text-white drop-shadow-lg">
-          Construindo Comunidades <br/>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-white">Fortes e Resilientes</span>
+    <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/90 to-transparent"></div>
+    <div class="absolute -top-[30%] -right-[10%] w-[700px] h-[700px] bg-primary/10 rounded-full blur-[150px] pointer-events-none"></div>
+    <div class="absolute -bottom-[20%] -left-[10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[130px] pointer-events-none"></div>
+
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+    
+    <div class="container mx-auto px-6 max-w-6xl relative z-10 py-32 mt-12">
+      <div class="max-w-3xl text-center lg:text-left lg:mr-auto">
+        
+        <div class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/[0.04] border border-white/10 text-slate-300 font-medium mb-8 text-xs tracking-widest uppercase backdrop-blur-md">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          Moçambique — Sociedade Civil
+        </div>
+        
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] mb-6 text-white">
+          Construindo comunidades <br class="hidden sm:inline"/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-200 to-white">
+            fortes e resilientes.
+          </span>
         </h1>
-        <p class="text-xl md:text-2xl mb-12 text-blue-50 font-light leading-relaxed max-w-3xl mx-auto drop-shadow-md">
-          A APROCOSO é uma organização da sociedade civil dedicada à promoção da proteção, inclusão social e resposta humanitária.
+        
+        <p class="text-lg md:text-xl mb-10 text-slate-300 font-normal leading-relaxed max-w-2xl text-balance">
+          A <span class="text-white font-semibold">APROCOSO</span> é uma organização dedicada à promoção da proteção, inclusão social e resposta humanitária eficiente no terreno.
         </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-6">
-          <a href="#projetos" class="bg-primary hover:bg-primary-light text-white px-8 py-4 rounded-full font-bold transition-all duration-300 shadow-[0_0_20px_rgba(61,81,181,0.4)] hover:shadow-[0_0_30px_rgba(107,123,232,0.6)] hover:-translate-y-1">
-            Nossos Projetos
+        
+        <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+          <a 
+            href="#projetos" 
+            class="group relative inline-flex items-center justify-center bg-primary hover:bg-primary-light text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 overflow-hidden"
+          >
+            <span class="relative z-10 flex items-center gap-2">
+              Nossos Projetos 
+              <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </span>
           </a>
-          <a href="#sobre" class="bg-white text-primary-dark px-8 py-4 rounded-full font-bold hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 shadow-xl hover:shadow-white/30">
+          
+          <a 
+            href="#sobre" 
+            class="inline-flex items-center justify-center bg-white/[0.03] text-white border border-white/10 px-8 py-4 rounded-xl font-semibold hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+          >
             Quem Somos
           </a>
         </div>
+
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 opacity-50 hover:opacity-100 transition-opacity duration-300">
+      <span class="text-[10px] tracking-widest text-slate-400 uppercase font-medium">Scroll</span>
+      <div class="w-[20px] h-[32px] border-2 border-slate-400 rounded-full p-1 flex justify-center">
+        <div class="w-[3px] h-[6px] bg-slate-400 rounded-full animate-bounce"></div>
       </div>
     </div>
   </section>
 
-  <!-- Sobre Nós Section -->
   <section id="sobre" class="py-24 relative overflow-hidden bg-light">
-    <!-- Decoração de Fundo -->
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
     
     <div class="container mx-auto px-4 max-w-6xl relative z-10">
@@ -88,7 +116,7 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
                 <span class="text-2xl">🎯</span>
               </div>
               <h3 class="text-xl font-bold mb-2 text-primary-dark">Nossa Missão</h3>
-              <p class="text-gray-500 text-sm leading-relaxed">Promover a proteção, inclusão social e desenvolvimento através de programas comunitários e resposta humanitária.</p>
+              <p class="text-gray-500 text-sm leading-relaxed">Promover a protection, inclusão social e desenvolvimento através de programas comunitários e resposta humanitária.</p>
             </div>
           </div>
         </div>
@@ -108,7 +136,6 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
     </div>
   </section>
 
-  <!-- Carrossel de Ação no Terreno -->
   <section class="py-24 bg-white overflow-hidden">
     <div class="container mx-auto px-4 max-w-6xl mb-12 text-center">
       <div class="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase mb-4 text-sm">
@@ -121,7 +148,6 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
     <PhotoCarousel photos={carouselPhotos} client:load />
   </section>
 
-  <!-- Áreas de Intervenção (Cards com Micro-Animações) -->
   <section id="projetos" class="py-24 bg-light relative">
     <div class="container mx-auto px-4 max-w-7xl">
       <div class="text-center max-w-3xl mx-auto mb-20">
@@ -150,7 +176,6 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
     </div>
   </section>
 
-  <!-- Impacto & Alcance -->
   <section class="py-24 bg-primary-dark text-white relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
     <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-primary rounded-full blur-[120px] opacity-30 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
@@ -204,7 +229,6 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
     </div>
   </section>
 
-  <!-- Notícias / Artigos Recentes -->
   <section class="py-24 bg-light">
     <div class="container mx-auto px-4 max-w-6xl">
       <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
@@ -280,7 +304,7 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
     /* Animação adicional para o Hero Image Ken Burns Effect */
     @keyframes kenburns {
       0% { transform: scale(1); }
-      100% { transform: scale(1.05); }
+      100% { transform: scale(1.06); }
     }
   </style>
 </Layout>
