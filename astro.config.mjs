@@ -9,7 +9,9 @@ export default defineConfig({
   site: 'https://aprocoso.org',
   integrations: [
     tailwind(),
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.includes('/studio'), // Exclui a rota do Sanity Studio do sitemap
+    }),
     react(),
     sanity({
       projectId: process.env.PUBLIC_SANITY_PROJECT_ID || 's7ek0e64',
