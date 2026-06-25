@@ -28,13 +28,13 @@ npm install
 Crie um ficheiro `.env` na raiz do projeto (ou copie o `.env.example`):
 
 ```env
-PUBLIC_SANITY_PROJECT_ID="s7ek0e64"
+PUBLIC_SANITY_PROJECT_ID="******"
 PUBLIC_SANITY_DATASET="artigos"
 SANITY_API_TOKEN="o_seu_token_de_leitura_ou_escrita_aqui"
 ```
 
 A APROCOSO forneceu os seguintes detalhes:
-- Project ID: `s7ek0e64`
+- Project ID: `******`
 - Dataset: `artigos`
 - Token já adicionado durante o desenvolvimento.
 
