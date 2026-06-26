@@ -1,23 +1,26 @@
 name: Deploy para GitHub Pages
 
 on:
-  # Dispara em cada push para o branch principal
   push:
     branches: [main, master]
-
-  # Dispara via webhook do Sanity (quando um artigo é publicado)
   repository_dispatch:
     types: [sanity-content-update]
-
-  # Permite correr manualmente a partir da aba Actions
   workflow_dispatch:
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+# Permissões necessárias para o deploy oficial do GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
+# Só um deploy de cada vez
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
@@ -28,6 +31,9 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Instalar dependências
         run: npm ci
 
@@ -37,9 +43,18 @@ jobs:
           PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
           PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
 
-      - name: Deploy para GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload do artefacto para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy para GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
