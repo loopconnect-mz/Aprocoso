@@ -7,20 +7,13 @@ on:
     types: [sanity-content-update]
   workflow_dispatch:
 
-# Permissões necessárias para o deploy oficial do GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Só um deploy de cada vez
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
@@ -31,9 +24,6 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
-
       - name: Instalar dependências
         run: npm ci
 
@@ -43,18 +33,10 @@ jobs:
           PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
           PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
 
-      - name: Upload do artefacto para GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy para branch gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy para GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          enable_jekyll: false
