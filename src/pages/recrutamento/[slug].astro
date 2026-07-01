@@ -1,0 +1,304 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { getVagas, getVaga } from '../../lib/sanity';
+import type { Vaga } from '../../lib/sanity';
+import { PortableText } from '@portabletext/react';
+
+export async function getStaticPaths() {
+  let vagas: Vaga[] = [];
+  try {
+    vagas = await getVagas();
+  } catch (e) {
+    vagas = [];
+  }
+  return vagas.map((vaga) => ({
+    params: { slug: vaga.slug.current },
+    props: { vaga },
+  }));
+}
+
+const { vaga } = Astro.props as { vaga: Vaga };
+
+const prazo = new Date(vaga.prazoInscricao);
+const publicado = new Date(vaga.publicadoEm);
+const hoje = new Date();
+const diasRestantes = Math.ceil((prazo.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
+const expirada = diasRestantes < 0;
+
+const tipoColors: Record<string, string> = {
+  'Tempo Integral': 'bg-blue-100 text-blue-700',
+  'Tempo Parcial': 'bg-purple-100 text-purple-700',
+  'Consultoria': 'bg-amber-100 text-amber-700',
+  'Voluntariado': 'bg-green-100 text-green-700',
+  'Estágio': 'bg-pink-100 text-pink-700',
+};
+---
+
+<Layout title={`${vaga.titulo} | Recrutamento APROCOSO`}>
+  <!-- Breadcrumb & Header -->
+  <section class="relative bg-slate-950 pt-32 pb-16 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-primary/15 to-slate-950"></div>
+    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/3 translate-x-1/4"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+
+    <div class="container mx-auto px-4 max-w-5xl relative z-10">
+      <nav class="flex items-center gap-2 text-sm text-slate-400 mb-8">
+        <a href="/" class="hover:text-white transition">Início</a>
+        <span>/</span>
+        <a href="/recrutamento" class="hover:text-white transition">Recrutamento</a>
+        <span>/</span>
+        <span class="text-slate-200 truncate max-w-xs">{vaga.titulo}</span>
+      </nav>
+
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class={`text-xs font-bold px-3 py-1.5 rounded-full ${tipoColors[vaga.tipoContrato] ?? 'bg-gray-100 text-gray-600'}`}>
+          {vaga.tipoContrato}
+        </span>
+        <span class={`text-xs font-bold px-3 py-1.5 rounded-full ${expirada ? 'bg-red-900/50 text-red-300' : 'bg-green-900/50 text-green-300'}`}>
+          {expirada ? '🔴 Vaga Encerrada' : '🟢 Vaga Aberta'}
+        </span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+        {vaga.titulo}
+      </h1>
+
+      <div class="flex flex-wrap gap-x-8 gap-y-3 text-slate-300 text-sm">
+        <span class="flex items-center gap-2">
+          <Icon name="map-pin" class="w-4 h-4 text-primary-light" />
+          {vaga.localizacao}
+        </span>
+        <span class="flex items-center gap-2">
+          <Icon name="book" class="w-4 h-4 text-primary-light" />
+          {vaga.departamento}
+        </span>
+        <span class="flex items-center gap-2">
+          <Icon name="eye" class="w-4 h-4 text-primary-light" />
+          Prazo: {prazo.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </span>
+        <span class="flex items-center gap-2">
+          <Icon name="newspaper" class="w-4 h-4 text-primary-light" />
+          Publicado: {publicado.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conteúdo + Formulário -->
+  <section class="py-16 bg-light">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+        <!-- Coluna Esquerda: Detalhes da Vaga -->
+        <div class="lg:col-span-2 space-y-10">
+          <!-- Descrição -->
+          {vaga.descricao && vaga.descricao.length > 0 && (
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+              <h2 class="text-2xl font-bold text-primary-dark mb-5 flex items-center gap-3">
+                <span class="w-8 h-1 bg-primary rounded-full inline-block"></span>
+                Sobre a Vaga
+              </h2>
+              <div class="prose prose-lg max-w-none text-gray-600">
+                {vaga.descricao.map((block: any) => (
+                  block._type === 'block' && block.children ? (
+                    <p class="mb-4 leading-relaxed">{block.children.map((c: any) => c.text).join('')}</p>
+                  ) : null
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Requisitos -->
+          {vaga.requisitos && vaga.requisitos.length > 0 && (
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+              <h2 class="text-2xl font-bold text-primary-dark mb-5 flex items-center gap-3">
+                <span class="w-8 h-1 bg-primary rounded-full inline-block"></span>
+                Requisitos
+              </h2>
+              <ul class="space-y-3">
+                {vaga.requisitos.map((req: string) => (
+                  <li class="flex items-start gap-3 text-gray-600">
+                    <div class="w-6 h-6 shrink-0 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
+                      <svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    {req}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- Benefícios -->
+          {vaga.beneficios && vaga.beneficios.length > 0 && (
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+              <h2 class="text-2xl font-bold text-primary-dark mb-5 flex items-center gap-3">
+                <span class="w-8 h-1 bg-primary-light rounded-full inline-block"></span>
+                O que Oferecemos
+              </h2>
+              <ul class="space-y-3">
+                {vaga.beneficios.map((ben: string) => (
+                  <li class="flex items-start gap-3 text-gray-600">
+                    <div class="w-6 h-6 shrink-0 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                      <svg class="w-3.5 h-3.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    {ben}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <!-- Coluna Direita: Formulário de Candidatura -->
+        <div class="lg:col-span-1">
+          <div class="sticky top-28">
+            {expirada ? (
+              <div class="bg-red-50 border border-red-100 rounded-2xl p-8 text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Icon name="eye" class="w-8 h-8 text-red-400" />
+                </div>
+                <h3 class="text-xl font-bold text-red-700 mb-2">Prazo Encerrado</h3>
+                <p class="text-red-500 text-sm mb-6">As candidaturas para esta vaga já não estão abertas.</p>
+                <a href="/recrutamento" class="text-primary font-bold hover:underline text-sm">← Ver outras vagas</a>
+              </div>
+            ) : (
+              <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-lg shadow-primary/5">
+                <h3 class="text-xl font-bold text-primary-dark mb-2">Candidatar-me</h3>
+                <p class="text-gray-500 text-sm mb-6">Preencha o formulário abaixo para se candidatar a esta vaga.</p>
+
+                <!-- Formulário via FormSubmit (sem backend necessário) -->
+                <form
+                  action="https://formsubmit.co/info.aprocoso@gmail.com"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  id="candidatura-form"
+                  class="space-y-4"
+                >
+                  <!-- Anti-spam e configurações do formsubmit -->
+                  <input type="hidden" name="_subject" value={`Candidatura: ${vaga.titulo}`} />
+                  <input type="hidden" name="_captcha" value="false" />
+                  <input type="hidden" name="_template" value="table" />
+                  <input type="hidden" name="Vaga" value={vaga.titulo} />
+                  <input type="hidden" name="Departamento" value={vaga.departamento} />
+                  <input type="hidden" name="_next" value={`${Astro.url.origin}/recrutamento?candidatura=sucesso`} />
+
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5" for="nome">Nome Completo *</label>
+                    <input
+                      type="text"
+                      id="nome"
+                      name="Nome Completo"
+                      required
+                      placeholder="O seu nome completo"
+                      class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5" for="email">Email *</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="Email"
+                      required
+                      placeholder="email@exemplo.com"
+                      class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5" for="telefone">Telefone *</label>
+                    <input
+                      type="tel"
+                      id="telefone"
+                      name="Telefone"
+                      required
+                      placeholder="+258 8X XXX XXXX"
+                      class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5" for="cv">Currículo (PDF) *</label>
+                    <input
+                      type="file"
+                      id="cv"
+                      name="Curriculo"
+                      accept=".pdf,.doc,.docx"
+                      required
+                      class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-semibold file:text-xs cursor-pointer"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5" for="carta">Carta de Motivação</label>
+                    <textarea
+                      id="carta"
+                      name="Carta de Motivacao"
+                      rows="4"
+                      placeholder="Descreva brevemente a sua motivação para esta vaga..."
+                      class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition resize-none"
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    id="submit-btn"
+                    class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 flex items-center justify-center gap-2 group"
+                  >
+                    <span>Enviar Candidatura</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                  </button>
+                  <p class="text-xs text-gray-400 text-center">
+                    Os seus dados são tratados com total confidencialidade.
+                  </p>
+                </form>
+              </div>
+            )}
+
+            <!-- Info Prazo -->
+            {!expirada && (
+              <div class={`mt-4 rounded-xl p-4 text-center text-sm font-semibold ${diasRestantes <= 7 ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-amber-50 text-amber-700 border border-amber-100'}`}>
+                {diasRestantes === 0
+                  ? '⚠️ Último dia de candidaturas!'
+                  : diasRestantes === 1
+                  ? '⏰ Encerra amanhã!'
+                  : `📅 ${diasRestantes} dias restantes para candidatar`
+                }
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="/recrutamento" class="inline-flex items-center gap-2 text-primary font-semibold hover:text-primary-dark transition text-sm">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Voltar a todas as vagas
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Mostrar mensagem de sucesso se redireccionado após candidatura
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('candidatura') === 'sucesso') {
+    const banner = document.createElement('div');
+    banner.className = 'fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-8 py-4 rounded-2xl shadow-2xl font-bold text-center flex items-center gap-3';
+    banner.innerHTML = `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Candidatura enviada com sucesso!`;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 5000);
+  }
+</script>

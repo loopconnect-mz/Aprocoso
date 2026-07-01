@@ -81,3 +81,51 @@ export async function getCategories(): Promise<{title: string, slug: {current: s
   }`);
 }
 
+export interface Vaga {
+  _id: string;
+  titulo: string;
+  slug: { current: string };
+  departamento: string;
+  localizacao: string;
+  tipoContrato: string;
+  prazoInscricao: string;
+  descricao: any[];
+  requisitos: string[];
+  beneficios: string[];
+  status: 'aberta' | 'fechada' | 'em-analise';
+  publicadoEm: string;
+}
+
+export async function getVagas(): Promise<Vaga[]> {
+  return await sanityClient.fetch(`*[_type == "vaga" && status == "aberta"] | order(publicadoEm desc) {
+    _id,
+    titulo,
+    slug,
+    departamento,
+    localizacao,
+    tipoContrato,
+    prazoInscricao,
+    descricao,
+    requisitos,
+    beneficios,
+    status,
+    publicadoEm
+  }`);
+}
+
+export async function getVaga(slug: string): Promise<Vaga> {
+  return await sanityClient.fetch(`*[_type == "vaga" && slug.current == $slug][0] {
+    _id,
+    titulo,
+    slug,
+    departamento,
+    localizacao,
+    tipoContrato,
+    prazoInscricao,
+    descricao,
+    requisitos,
+    beneficios,
+    status,
+    publicadoEm
+  }`, { slug });
+}
