@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { getPosts, urlFor } from '../lib/sanity';
 import PhotoCarousel from '../components/PhotoCarousel';
+import Icon from '../components/Icon.astro';
 
 const posts = await getPosts();
 
@@ -19,12 +20,16 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
 
 <Layout title="Início">
   <section class="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-950">
-    {heroBg && (
-      <div 
-        class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity scale-100 animate-[kenburns_24s_ease-out_infinite_alternate]" 
-        style={`background-image: url('${heroBg}')`}
-      ></div>
-    )}
+    <!-- Video de Fundo do YouTube -->
+    <div class="absolute inset-0 w-full h-full overflow-hidden opacity-30 mix-blend-luminosity pointer-events-none">
+      <iframe
+        class="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-105"
+        src="https://www.youtube.com/embed/n3bwka576eY?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playlist=n3bwka576eY"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+      ></iframe>
+    </div>
     
     <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/90 to-transparent"></div>
     <div class="absolute -top-[30%] -right-[10%] w-[700px] h-[700px] bg-primary/10 rounded-full blur-[150px] pointer-events-none"></div>
@@ -106,14 +111,14 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
           <div class="grid sm:grid-cols-2 gap-6 mt-10">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <span class="text-2xl">👁️</span>
+                <Icon name="eye" class="w-6 h-6 text-primary" />
               </div>
               <h3 class="text-xl font-bold mb-2 text-primary-dark">Nossa Visão</h3>
               <p class="text-gray-500 text-sm leading-relaxed">Uma sociedade inclusiva, resiliente e pacífica, onde todas as pessoas tenham acesso aos seus direitos, oportunidades e uma vida digna.</p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div class="w-12 h-12 bg-primary-light/10 rounded-full flex items-center justify-center mb-4">
-                <span class="text-2xl">🎯</span>
+                <Icon name="target" class="w-6 h-6 text-primary" />
               </div>
               <h3 class="text-xl font-bold mb-2 text-primary-dark">Nossa Missão</h3>
               <p class="text-gray-500 text-sm leading-relaxed">Promover a protection, inclusão social e desenvolvimento através de programas comunitários e resposta humanitária.</p>
@@ -157,16 +162,16 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[
-          { title: 'Proteção da Criança', icon: '🛡️', desc: 'Promovemos ambientes seguros para crianças e adolescentes através da prevenção da violência, abuso, exploração e negligência.' },
-          { title: 'Prevenção de VBG', icon: '✊', desc: 'Implementamos ações de prevenção, sensibilização e apoio a sobreviventes de Violência Baseada no Género (VBG).' },
-          { title: 'Apoio Psicossocial', icon: '🧠', desc: 'Prestamos apoio psicossocial a indivíduos, famílias e comunidades afetadas por conflitos e deslocamentos.' },
-          { title: 'Educação e Empoderamento', icon: '📚', desc: 'Promovemos o acesso à educação, formação profissional e desenvolvimento de competências para a vida.' },
-          { title: 'Desenvolvimento Comunitário', icon: '🌱', desc: 'Fortalecemos a capacidade das comunidades para promover meios de subsistência sustentáveis e inclusão económica.' },
-          { title: 'Assistência Humanitária', icon: '🤝', desc: 'Respondemos às necessidades imediatas de populações afetadas por emergências, garantindo proteção.' }
+          { title: 'Proteção da Criança', icon: 'shield', desc: 'Promovemos ambientes seguros para crianças e adolescentes através da prevenção da violência, abuso, exploração e negligência.' },
+          { title: 'Prevenção de VBG', icon: 'fist', desc: 'Implementamos ações de prevenção, sensibilização e apoio a sobreviventes de Violência Baseada no Género (VBG).' },
+          { title: 'Apoio Psicossocial', icon: 'brain', desc: 'Prestamos apoio psicossocial a indivíduos, famílias e comunidades afetadas por conflitos e deslocamentos.' },
+          { title: 'Educação e Empoderamento', icon: 'book', desc: 'Promovemos o acesso à educação, formação profissional e desenvolvimento de competências para a vida.' },
+          { title: 'Desenvolvimento Comunitário', icon: 'sprout', desc: 'Fortalecemos a capacidade das comunidades para promover meios de subsistência sustentáveis e inclusão económica.' },
+          { title: 'Assistência Humanitária', icon: 'handshake', desc: 'Respondemos às necessidades imediatas de populações afetadas por emergências, garantindo proteção.' }
         ].map(area => (
           <div class="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgb(61,81,181,0.08)] transition-all duration-500 hover:-translate-y-2 group border border-transparent hover:border-primary/10">
             <div class="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-              <span class="text-3xl grayscale group-hover:grayscale-0 transition-all duration-300">{area.icon}</span>
+              <Icon name={area.icon as any} class="w-8 h-8 text-primary grayscale group-hover:grayscale-0 group-hover:text-white transition-all duration-300" />
             </div>
             <h3 class="text-2xl font-bold mb-4 text-primary-dark group-hover:text-primary transition-colors">{area.title}</h3>
             <p class="text-gray-600 leading-relaxed">{area.desc}</p>
@@ -193,12 +198,12 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
           
           <div class="grid grid-cols-2 gap-6 mb-8">
             <div class="glass-dark p-6 rounded-2xl">
-              <span class="block text-3xl mb-2">🏘️</span>
+              <Icon name="home" class="w-10 h-10 text-primary-light mb-4 block" />
               <span class="font-bold block mb-1">Comunidades</span>
               <span class="text-sm text-blue-200 block">Mais resilientes</span>
             </div>
             <div class="glass-dark p-6 rounded-2xl">
-              <span class="block text-3xl mb-2">👶</span>
+              <Icon name="baby" class="w-10 h-10 text-primary-light mb-4 block" />
               <span class="font-bold block mb-1">Crianças</span>
               <span class="text-sm text-blue-200 block">Protegidas e seguras</span>
             </div>
@@ -293,7 +298,7 @@ const carouselPhotos = photoUrls.slice(0, 8).map(src => ({ src }));
       
       {posts.length === 0 && (
         <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-300">
-          <div class="text-4xl mb-4">📰</div>
+          <Icon name="newspaper" class="w-16 h-16 mx-auto text-gray-300 mb-6" />
           <p class="text-gray-500 font-medium text-lg">Ainda não existem artigos publicados.</p>
         </div>
       )}

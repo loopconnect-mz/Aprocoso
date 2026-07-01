@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Icon from "../components/Icon.astro";
 
 const team = [
   {
@@ -115,7 +116,9 @@ const team = [
       <div
         class="mt-20 bg-primary/5 rounded-3xl p-10 md:p-16 border border-primary/10 text-center max-w-4xl mx-auto relative overflow-hidden"
       >
-        <div class="absolute -right-10 -top-10 text-9xl opacity-5">🤝</div>
+        <div class="absolute -right-10 -top-10 opacity-5">
+          <Icon name="handshake" class="w-48 h-48 text-primary" />
+        </div>
         <h2 class="text-3xl font-bold text-primary-dark mb-4">
           Faça parte da nossa missão
         </h2>
